@@ -39,14 +39,19 @@ from lanforge_mcp.models import (
 logger = logging.getLogger("lanforge_mcp")
 
 
+# Until we verify the exact LANforge add_sta flag bits against real hardware,
+# every security mode sends flags=0 and flags_mask=0 — i.e. "do not modify any
+# station-level flag bits; use LANforge defaults." The SSID/key parameters
+# alone are enough for LANforge to negotiate the AP's advertised security
+# (WPA2/WPA3/WPS) in mock mode and on real hardware that follows the cookbook
+# add_sta examples. v0.2 will plumb explicit flag bits after a real LANforge
+# bake-off. Source: https://www.candelatech.com/lfcli_ug.php#add_sta
 _SECURITY_FLAG_BITS: dict[str, int] = {
     "open": 0,
-    "wpa": 0x200,
-    "wpa2": 0x10000,
-    "wpa3": 0x40000,
+    "wpa": 0,
+    "wpa2": 0,
+    "wpa3": 0,
 }
-# TODO: verify exact flag values against a real LANforge — source:
-# https://www.candelatech.com/lfcli_ug.php#add_sta (the bit table is in the user guide).
 
 _SEVERITY_RANK: dict[str, int] = {"INFO": 0, "WARN": 1, "ERR": 2}
 
@@ -64,7 +69,7 @@ def _log_call(name: str, args: str, result: str) -> None:
         args: One-line representation of the call args.
         result: One-line representation of the return value.
     """
-    logger.info("[%s] TOOL %s(%s) -> %s", _now_hhmmss(), name, args, result)
+    logger.info("[%s] TOOL %s(%s) → %s", _now_hhmmss(), name, args, result)
 
 
 def _build_add_sta_payload(spec: CreateStationSpec, index: int) -> dict[str, Any]:
@@ -89,7 +94,7 @@ def _build_add_sta_payload(spec: CreateStationSpec, index: int) -> dict[str, Any
         "ap": "AUTO",
         "mode": 0,
         "mac": "NA",
-        "flags_mask": 0xFFFFFFFF,
+        "flags_mask": 0,
     }
 
 

@@ -39,8 +39,8 @@ Type into Claude Desktop:
 Claude streams its response. As it runs, the right-hand log shows:
 
 ```
-[14:32:01] TOOL list_ports(resource=1) -> 6 ports returned
-[14:32:02] TOOL create_stations(count=4, ssid='Candela-Test', dry_run=True) -> preview returned
+[14:32:01] TOOL list_ports(resource=1) → 6 ports returned
+[14:32:02] TOOL create_stations(count=4, ssid='Candela-Test', dry_run=True) → preview returned
 ```
 
 Claude pauses to ask: *"Confirm execution? (dry-run shows it would create
@@ -48,15 +48,15 @@ sta0000..sta0003 on wiphy0 with WPA2.)"* — point to this on camera.
 Reply **"go".**
 
 ```
-[14:32:11] TOOL create_stations(count=4, ssid='Candela-Test', dry_run=False) -> 4 stations posted
-[14:32:14] TOOL start_l3_traffic(cx='cx_auto', protocol=lf_udp, dry_run=True) -> preview returned
+[14:32:11] TOOL create_stations(count=4, ssid='Candela-Test', dry_run=False) → 4 stations posted
+[14:32:14] TOOL start_l3_traffic(cx='cx_auto', protocol=lf_udp, dry_run=True) → preview returned
 ```
 
 Approve again. Claude executes:
 
 ```
-[14:32:22] TOOL start_l3_traffic(cx='cx_auto', protocol=lf_udp, dry_run=False) -> CX started (4 steps)
-[14:32:24] TOOL get_test_results(cx_name='cx_auto') -> Running, 95916000 bps total, 1.95% loss
+[14:32:22] TOOL start_l3_traffic(cx='cx_auto', protocol=lf_udp, dry_run=False) → CX started (4 steps)
+[14:32:24] TOOL get_test_results(cx_name='cx_auto') → Running, 95916000 bps total, 1.95% loss
 ```
 
 Claude reports: *"The CX is running at ~95 Mbps aggregate. Packet loss
@@ -69,7 +69,7 @@ Type:
 > **Yes, diagnose.**
 
 ```
-[14:32:31] TOOL diagnose_failure(cx_name='cx_auto', resource=1) -> 1.95% loss, 8 events, summary generated
+[14:32:31] TOOL diagnose_failure(cx_name='cx_auto', resource=1) → 1.95% loss, 8 events, summary generated
 ```
 
 Claude returns a structured response — show the summary line on screen:

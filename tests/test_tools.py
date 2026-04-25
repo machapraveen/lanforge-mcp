@@ -41,15 +41,18 @@ async def test_create_stations_wet_posts_each_station(client: LANforgeClient) ->
     assert spy_post.await_count == 3
 
 
-async def test_create_stations_security_flag_bits() -> None:
+async def test_create_stations_payload_uses_safe_flag_defaults() -> None:
+    """Until LANforge flag-bit values are verified, every payload sends flags=0
+    and flags_mask=0 (do-not-modify-any-bits) so the demo preview stays clean."""
     spec_open = CreateStationSpec(radio="wiphy0", count=1, ssid_prefix="X", security="open")
     spec_wpa2 = CreateStationSpec(
         radio="wiphy0", count=1, ssid_prefix="X", security="wpa2", key="k"
     )
     p_open = tools._build_add_sta_payload(spec_open, 0)
     p_wpa2 = tools._build_add_sta_payload(spec_wpa2, 0)
-    assert p_open["flags"] == 0
-    assert p_wpa2["flags"] == 0x10000
+    for payload in (p_open, p_wpa2):
+        assert payload["flags"] == 0
+        assert payload["flags_mask"] == 0
     assert p_open["key"] == "[BLANK]"
     assert p_wpa2["key"] == "k"
 
