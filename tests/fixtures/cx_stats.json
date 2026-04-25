@@ -1,0 +1,27 @@
+{
+  "uri": "cx/:cx_id",
+  "handler": "candela.lanforge.GenericJsonResponder",
+  "1.1.cx_001": {
+    "name": "cx_001",
+    "type": "LF/UDP",
+    "state": "Running",
+    "eid": "1.1.cx_001",
+    "entity id": "NA",
+    "endpoints (a ↔ b)": "cx_001-A <=> cx_001-B",
+    "rpt timer": "1000",
+    "bps rx a": 47812000,
+    "bps rx b": 48104000,
+    "bps tx a": 50000000,
+    "bps tx b": 50000000,
+    "pkt rx a": 489201,
+    "pkt rx b": 491304,
+    "pkt tx a": 500000,
+    "pkt tx b": 500000,
+    "drop pkts a": 10799,
+    "drop pkts b": 8696,
+    "rx drop % a": 2.16,
+    "rx drop % b": 1.74,
+    "avg rtt": 18.4,
+    "_links": "/cx/1/1/cx_001"
+  }
+}

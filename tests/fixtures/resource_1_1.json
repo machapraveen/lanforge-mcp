@@ -1,0 +1,25 @@
+{
+  "uri": "resource/1/1",
+  "handler": "candela.lanforge.HttpResource$JsonResponse",
+  "resource": {
+    "shelf": 1,
+    "resource": 1,
+    "hostname": "lf-demo",
+    "ctrl-ip": "192.168.1.10",
+    "phantom": false,
+    "free swap": 16777212,
+    "free mem": 21342108,
+    "total mem": 32788932,
+    "total swap": 16777212,
+    "cpu": "Intel(R) Xeon(R) CPU E3-1240L v5 @ 2.10GHz",
+    "kernel": "5.15.71+",
+    "sw version": "5.4.6",
+    "max staged bringup": 50,
+    "max trying ifup": 15,
+    "max station bringup": 12,
+    "load avg": "0.42, 0.31, 0.28"
+  },
+  "candela.lanforge.HttpResource": {
+    "duration": "1"
+  }
+}

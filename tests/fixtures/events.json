@@ -1,0 +1,113 @@
+{
+  "uri": "events/last/100",
+  "handler": "candela.lanforge.HttpEvents$FixedJsonResponder",
+  "candela.lanforge.HttpEvents": {
+    "duration": "0"
+  },
+  "events": [
+    {
+      "2249312": {
+        "eid": "1.1.21",
+        "entity id": "NA",
+        "event": "Heartbeat",
+        "event description": "lanforge_main heartbeat ok",
+        "id": "2249312",
+        "name": "lanforge_main",
+        "priority": "  Info",
+        "time-stamp": "2026-04-25 09:14:02.103",
+        "type": "System"
+      }
+    },
+    {
+      "2249315": {
+        "eid": "1.1.22",
+        "entity id": "NA",
+        "event": "Connect",
+        "event description": "sta0000 (phy #0): connected to 00:0e:8e:00:11:22",
+        "id": "2249315",
+        "name": "sta0000",
+        "priority": "  Info",
+        "time-stamp": "2026-04-25 09:14:05.221",
+        "type": "Port"
+      }
+    },
+    {
+      "2249317": {
+        "eid": "1.1.23",
+        "entity id": "NA",
+        "event": "Connect",
+        "event description": "sta0001 (phy #0): connected to 00:0e:8e:00:11:22",
+        "id": "2249317",
+        "name": "sta0001",
+        "priority": "  Info",
+        "time-stamp": "2026-04-25 09:14:05.844",
+        "type": "Port"
+      }
+    },
+    {
+      "2249320": {
+        "eid": "1.1.24",
+        "entity id": "NA",
+        "event": "Beacon Loss",
+        "event description": "sta0002: beacon loss event detected (>2s no beacon from AP)",
+        "id": "2249320",
+        "name": "sta0002",
+        "priority": "  Warning",
+        "time-stamp": "2026-04-25 09:14:08.012",
+        "type": "Port"
+      }
+    },
+    {
+      "2249321": {
+        "eid": "1.1.25",
+        "entity id": "NA",
+        "event": "Authentication Timeout",
+        "event description": "sta0002: auth timeout, retrying (signal -82 dBm — likely RF issue)",
+        "id": "2249321",
+        "name": "sta0002",
+        "priority": "  Warning",
+        "time-stamp": "2026-04-25 09:14:08.521",
+        "type": "Port"
+      }
+    },
+    {
+      "2249322": {
+        "eid": "1.1.26",
+        "entity id": "NA",
+        "event": "Disconnect",
+        "event description": "sta0002: disconnected from BSS (reason 4: disassoc due to inactivity)",
+        "id": "2249322",
+        "name": "sta0002",
+        "priority": "  Warning",
+        "time-stamp": "2026-04-25 09:14:09.103",
+        "type": "Port"
+      }
+    },
+    {
+      "2249324": {
+        "eid": "1.1.27",
+        "entity id": "NA",
+        "event": "CX Started",
+        "event description": "cx_001: cross-connect started, ramping to 50 Mbps bidirectional",
+        "id": "2249324",
+        "name": "cx_001",
+        "priority": "  Info",
+        "time-stamp": "2026-04-25 09:14:10.000",
+        "type": "Connection"
+      }
+    },
+    {
+      "2249329": {
+        "eid": "1.1.28",
+        "entity id": "NA",
+        "event": "CX Drop",
+        "event description": "cx_001: 47 packets dropped on endpoint A (RF interference suspected)",
+        "id": "2249329",
+        "name": "cx_001",
+        "priority": "  Error",
+        "time-stamp": "2026-04-25 09:14:14.412",
+        "type": "Connection"
+      }
+    }
+  ]
+}

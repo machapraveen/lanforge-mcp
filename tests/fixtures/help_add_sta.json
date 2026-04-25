@@ -1,0 +1,105 @@
+{
+  "uri": "help/:cmd",
+  "handler": "candela.lanforge.HttpHelp$JsonResponse",
+  "command": "add_sta",
+  "synopsis": "add_sta shelf resource radio sta_name flags ssid key ap mode mac flags_mask",
+  "description": "Create a virtual Wi-Fi station (STA) on a Wi-Fi radio. Stations are virtual NICs that join an SSID and behave like real client devices.",
+  "params": [
+    {
+      "name": "shelf",
+      "type": "int",
+      "required": true,
+      "description": "Shelf id; almost always 1.",
+      "example": 1
+    },
+    {
+      "name": "resource",
+      "type": "int",
+      "required": true,
+      "description": "Resource id; 1 on a single-box install.",
+      "example": 1
+    },
+    {
+      "name": "radio",
+      "type": "string",
+      "required": true,
+      "description": "Parent radio device, e.g. 'wiphy0'.",
+      "example": "wiphy0"
+    },
+    {
+      "name": "sta_name",
+      "type": "string",
+      "required": true,
+      "description": "Station name. By convention 'sta0000'..'sta9999'.",
+      "example": "sta0000"
+    },
+    {
+      "name": "flags",
+      "type": "hex|int",
+      "required": false,
+      "description": "STA capability flags. 0 for defaults. Common: 0x400 (80211u), 0x10000 (WPA2), 0x40000 (WPA3).",
+      "example": 0
+    },
+    {
+      "name": "ssid",
+      "type": "string",
+      "required": true,
+      "description": "Target SSID to join.",
+      "example": "Candela-Test"
+    },
+    {
+      "name": "key",
+      "type": "string",
+      "required": false,
+      "description": "Pre-shared key. Use '[BLANK]' for open networks.",
+      "example": "candela-secret"
+    },
+    {
+      "name": "ap",
+      "type": "string",
+      "required": false,
+      "description": "Optional BSSID to lock to; 'AUTO' lets the kernel pick.",
+      "example": "AUTO"
+    },
+    {
+      "name": "mode",
+      "type": "int",
+      "required": false,
+      "description": "Wi-Fi mode: 0=auto, 4=802.11g, 6=802.11n, 8=802.11AC, 9=802.11AX.",
+      "example": 8
+    },
+    {
+      "name": "mac",
+      "type": "string",
+      "required": false,
+      "description": "MAC address. Use 'NA' for auto-assignment.",
+      "example": "00:0e:8e:aa:bb:01"
+    },
+    {
+      "name": "flags_mask",
+      "type": "hex|int",
+      "required": false,
+      "description": "Bitmask indicating which 'flags' bits to apply (LANforge merges old+new with this mask).",
+      "example": 0
+    }
+  ],
+  "examples": [
+    {
+      "url": "/cli-json/add_sta",
+      "method": "POST",
+      "body": {
+        "shelf": 1,
+        "resource": 1,
+        "radio": "wiphy0",
+        "sta_name": "sta0000",
+        "flags": 1024,
+        "ssid": "Candela-Test",
+        "key": "candela-secret",
+        "ap": "AUTO",
+        "mode": 8,
+        "mac": "NA",
+        "flags_mask": 1024
+      }
+    }
+  ]
+}
