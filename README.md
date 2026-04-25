@@ -6,7 +6,7 @@ Drive Candela Technologies' LANforge Wi-Fi test platform with Claude — or any 
 
 ![demo placeholder](demo/demo.gif)
 
-> 90-second walkthrough video: _link forthcoming. See `demo/demo_script.md` for the recording script._
+> **▶ Run the live demo: {{PAGES_URL}}** — three click-through scenarios, no install required.
 
 > **v0.1.0** — six tools, mock-mode default, MIT licensed. 63 tests, 88% coverage, `mypy --strict` clean. Python 3.10+, `mcp` SDK 1.2+.
 

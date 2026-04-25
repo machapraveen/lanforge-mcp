@@ -1,0 +1,158 @@
+{
+  "uri": "ports/:shelf_id/:resource_id/list",
+  "handler": "candela.lanforge.HttpPort$JsonResponse",
+  "candela.lanforge.HttpPort": {
+    "duration": "2"
+  },
+  "interfaces": [
+    {
+      "1.1.eth0": {
+        "alias": "eth0",
+        "device": "eth0",
+        "port": "eth0",
+        "mac": "00:0e:8e:11:22:01",
+        "ip": "192.168.1.10",
+        "mask": "255.255.255.0",
+        "gateway": "192.168.1.1",
+        "phantom": false,
+        "down": false,
+        "mode": "Auto",
+        "port type": "Ethernet",
+        "channel": 0,
+        "bps rx": 84230,
+        "bps tx": 12110,
+        "tx bytes": 18234567,
+        "rx bytes": 92348901,
+        "link": "UP",
+        "_links": "/port/1/1/eth0",
+        "parent dev": ""
+      }
+    },
+    {
+      "1.1.wiphy0": {
+        "alias": "wiphy0",
+        "device": "wiphy0",
+        "port": "wiphy0",
+        "mac": "00:0e:8e:aa:bb:00",
+        "ip": "0.0.0.0",
+        "mask": "0.0.0.0",
+        "gateway": "0.0.0.0",
+        "phantom": false,
+        "down": false,
+        "mode": "802.11abgn-AC",
+        "port type": "WIFI-Radio",
+        "channel": 36,
+        "bps rx": 0,
+        "bps tx": 0,
+        "tx bytes": 0,
+        "rx bytes": 0,
+        "link": "UP",
+        "driver": "ath10k_pci",
+        "_links": "/port/1/1/wiphy0",
+        "parent dev": ""
+      }
+    },
+    {
+      "1.1.wiphy1": {
+        "alias": "wiphy1",
+        "device": "wiphy1",
+        "port": "wiphy1",
+        "mac": "00:0e:8e:aa:bb:10",
+        "ip": "0.0.0.0",
+        "mask": "0.0.0.0",
+        "gateway": "0.0.0.0",
+        "phantom": false,
+        "down": false,
+        "mode": "802.11ax",
+        "port type": "WIFI-Radio",
+        "channel": 149,
+        "bps rx": 0,
+        "bps tx": 0,
+        "tx bytes": 0,
+        "rx bytes": 0,
+        "link": "UP",
+        "driver": "ath11k_pci",
+        "_links": "/port/1/1/wiphy1",
+        "parent dev": ""
+      }
+    },
+    {
+      "1.1.sta0000": {
+        "alias": "sta0000",
+        "device": "sta0000",
+        "port": "sta0000",
+        "mac": "00:0e:8e:aa:bb:01",
+        "ip": "192.168.1.50",
+        "mask": "255.255.255.0",
+        "gateway": "192.168.1.1",
+        "phantom": false,
+        "down": false,
+        "mode": "802.11abgn-AC",
+        "port type": "WIFI-STA",
+        "channel": 36,
+        "ssid": "Candela-Test",
+        "bps rx": 312500000,
+        "bps tx": 311000000,
+        "tx bytes": 482938293,
+        "rx bytes": 491209384,
+        "link": "UP",
+        "signal": -42,
+        "ap": "00:0e:8e:00:11:22",
+        "_links": "/port/1/1/sta0000",
+        "parent dev": "wiphy0"
+      }
+    },
+    {
+      "1.1.sta0001": {
+        "alias": "sta0001",
+        "device": "sta0001",
+        "port": "sta0001",
+        "mac": "00:0e:8e:aa:bb:02",
+        "ip": "192.168.1.51",
+        "mask": "255.255.255.0",
+        "gateway": "192.168.1.1",
+        "phantom": false,
+        "down": false,
+        "mode": "802.11abgn-AC",
+        "port type": "WIFI-STA",
+        "channel": 36,
+        "ssid": "Candela-Test",
+        "bps rx": 298000000,
+        "bps tx": 296000000,
+        "tx bytes": 478123012,
+        "rx bytes": 487329048,
+        "link": "UP",
+        "signal": -47,
+        "ap": "00:0e:8e:00:11:22",
+        "_links": "/port/1/1/sta0001",
+        "parent dev": "wiphy0"
+      }
+    },
+    {
+      "1.1.sta0002": {
+        "alias": "sta0002",
+        "device": "sta0002",
+        "port": "sta0002",
+        "mac": "00:0e:8e:aa:bb:03",
+        "ip": "0.0.0.0",
+        "mask": "0.0.0.0",
+        "gateway": "0.0.0.0",
+        "phantom": false,
+        "down": false,
+        "mode": "802.11abgn-AC",
+        "port type": "WIFI-STA",
+        "channel": 36,
+        "ssid": "Candela-Test",
+        "bps rx": 0,
+        "bps tx": 0,
+        "tx bytes": 0,
+        "rx bytes": 0,
+        "link": "NO-LINK",
+        "signal": -82,
+        "ap": "",
+        "_links": "/port/1/1/sta0002",
+        "parent dev": "wiphy0"
+      }
+    }
+  ]
+}

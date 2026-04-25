@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="lanforge-mcp — Drive Candela Technologies' LANforge Wi-Fi test platform with Claude. Interactive demo." />
+  <meta name="color-scheme" content="dark" />
+  <title>lanforge-mcp · interactive demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="banner">
+    <div class="banner-inner">
+      <div class="brand">
+        <span class="logo-mark" aria-hidden="true">⌬</span>
+        <div>
+          <h1>lanforge-mcp</h1>
+          <p class="subtitle">Drive Candela LANforge with Claude. 48-hour build.</p>
+        </div>
+      </div>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="https://github.com/machapraveen/lanforge-mcp" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+        <a href="https://github.com/machapraveen/lanforge-mcp#readme" target="_blank" rel="noopener">README</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="pane chat-pane" aria-label="Claude conversation">
+      <div class="pane-header">
+        <span class="pane-dot pane-dot-claude" aria-hidden="true"></span>
+        <span class="pane-title">Claude Desktop</span>
+        <span class="pane-meta">claude-opus-4-7 · MCP: lanforge</span>
+      </div>
+      <div class="conversation" id="conversation" role="log" aria-live="polite">
+        <div class="placeholder">
+          <p class="placeholder-headline">Pick a scenario below to start the demo.</p>
+          <p class="placeholder-sub">
+            The chat on the left shows what Claude Desktop displays.
+            The log on the right shows what <code>lanforge-mcp</code> emits to <code>stderr</code>
+            for every tool call. Tool inputs and outputs are pulled from the same JSON fixtures
+            the test suite uses — nothing is hardcoded.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="pane log-pane" aria-label="MCP server log">
+      <div class="pane-header">
+        <span class="pane-dot pane-dot-server" aria-hidden="true"></span>
+        <span class="pane-title">lanforge-mcp · stderr</span>
+        <span class="pane-meta">tail -f</span>
+      </div>
+      <pre class="server-log" id="server-log" aria-live="polite"></pre>
+    </section>
+  </main>
+
+  <section class="scenarios" aria-label="Demo scenarios">
+    <div class="scenarios-inner">
+      <header class="scenarios-header">
+        <span class="scenarios-eyebrow">Demos</span>
+        <h2>Three scenarios, real fixtures, no hand-waving.</h2>
+      </header>
+      <div class="scenario-buttons">
+        <button class="scenario-btn" data-scenario="capacity">
+          <span class="scenario-icon" aria-hidden="true">▶</span>
+          <span class="scenario-body">
+            <span class="scenario-title">Capacity ramp</span>
+            <span class="scenario-tools"><code>list_ports</code> → <code>create_stations</code> → <code>start_l3_traffic</code> → <code>get_test_results</code></span>
+            <span class="scenario-blurb">Four stations, UDP traffic, packet-loss readout. The dry-run safety pause is the highlight.</span>
+          </span>
+        </button>
+        <button class="scenario-btn" data-scenario="diagnose">
+          <span class="scenario-icon" aria-hidden="true">▶</span>
+          <span class="scenario-body">
+            <span class="scenario-title">Diagnose cx_001</span>
+            <span class="scenario-tools"><code>diagnose_failure</code></span>
+            <span class="scenario-blurb">Concurrent CX stats + 100 events + ports → rule-based summary, no LLM in the diagnostic path.</span>
+          </span>
+        </button>
+        <button class="scenario-btn" data-scenario="triage">
+          <span class="scenario-icon" aria-hidden="true">▶</span>
+          <span class="scenario-body">
+            <span class="scenario-title">Event triage</span>
+            <span class="scenario-tools"><code>get_events</code></span>
+            <span class="scenario-blurb">Severity-filtered tail, then the LLM groups by station and calls out the RF cluster.</span>
+          </span>
+        </button>
+      </div>
+      <div class="scenario-controls">
+        <button class="control-btn" id="skip-btn" type="button">Skip animation</button>
+        <button class="control-btn" id="reset-btn" type="button">Reset</button>
+      </div>
+    </section>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-stats">
+        <span>Six tools</span>
+        <span class="dot" aria-hidden="true">·</span>
+        <span><code>mypy --strict</code></span>
+        <span class="dot" aria-hidden="true">·</span>
+        <span>88% coverage</span>
+        <span class="dot" aria-hidden="true">·</span>
+        <span>MIT</span>
+        <span class="dot" aria-hidden="true">·</span>
+        <span>Built with Claude Code</span>
+      </div>
+      <p class="footer-disclaimer">
+        This page is a deterministic mock — animated client-side from the same JSON fixtures
+        in <code>tests/fixtures/</code>. The real server runs at
+        <a href="https://github.com/machapraveen/lanforge-mcp" target="_blank" rel="noopener">github.com/machapraveen/lanforge-mcp</a>.
+      </p>
+      <p class="footer-author">
+        Built by <a href="https://github.com/machapraveen" target="_blank" rel="noopener">Macha Praveen</a>
+        for Candela Technologies. Not affiliated.
+      </p>
+    </div>
+  </footer>
+
+  <script src="demo.js" defer></script>
+</body>
+</html>

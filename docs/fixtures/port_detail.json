@@ -1,0 +1,35 @@
+{
+  "uri": "port/:shelf_id/:resource_id/:port_id",
+  "handler": "candela.lanforge.HttpPort$JsonResponse",
+  "candela.lanforge.HttpPort": {
+    "duration": "1"
+  },
+  "interface": {
+    "alias": "wiphy0",
+    "device": "wiphy0",
+    "port": "wiphy0",
+    "mac": "00:0e:8e:aa:bb:00",
+    "ip": "0.0.0.0",
+    "mask": "0.0.0.0",
+    "gateway": "0.0.0.0",
+    "phantom": false,
+    "down": false,
+    "mode": "802.11abgn-AC",
+    "port type": "WIFI-Radio",
+    "channel": 36,
+    "frequency": 5180,
+    "bandwidth": 80,
+    "country code": 840,
+    "antenna": "All-3x3",
+    "tx-power": 22,
+    "noise": -98,
+    "bps rx": 0,
+    "bps tx": 0,
+    "tx bytes": 0,
+    "rx bytes": 0,
+    "link": "UP",
+    "driver": "ath10k_pci",
+    "_links": "/port/1/1/wiphy0",
+    "parent dev": ""
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "status": "OK",
+  "message": "command accepted",
+  "uri": "/cli-json/:cmd",
+  "handler": "candela.lanforge.HttpCli$JsonResponse"
+}

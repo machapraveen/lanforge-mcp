@@ -1,0 +1,10 @@
+{
+  "VersionInfo": {
+    "BuildVersion": "5.4.6",
+    "BuildDate": "Wed Mar 15 14:22:01 PDT 2026",
+    "GitVersion": "5.4.6-1-gabc1234",
+    "Hostname": "lf-demo"
+  },
+  "uri": "/",
+  "handler": "candela.lanforge.HttpRoot$JsonResponse"
+}
