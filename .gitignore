@@ -36,5 +36,9 @@ coverage.xml
 .scratch/
 *.tmp
 
+# Private working files (drafts, prompts) — never commit
+outreach/
+prompt/
+
 # Logs
 *.log
