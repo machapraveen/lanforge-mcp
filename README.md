@@ -1,5 +1,7 @@
 # lanforge-mcp
 
+Built with Claude Code in 48 hours by Macha Praveen for Candela Technologies.
+
 Drive Candela Technologies' LANforge Wi-Fi test platform with Claude — or any MCP client.
 
 ![demo placeholder](demo/demo.gif)
