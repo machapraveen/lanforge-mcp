@@ -1,0 +1,929 @@
+=== tools/list ===
+
+{
+  "tools": [
+    {
+      "name": "list_ports",
+      "description": "List every port on a LANforge resource.\n\n    Read-only. Use this to discover which radios (``wiphy0``, ``wiphy1``)\n    and stations (``sta0000``...) currently exist before creating new ones\n    or starting traffic.\n\n    Example: ``list_ports(resource=1)`` returns physical NICs, Wi-Fi\n    radios, and any virtual stations on resource 1.\n\n    Args:\n        resource: Resource id (default 1; single-box installs only have 1).\n\n    Returns:\n        List of Port objects with name, mac, ip, radio, link_state, bps_rx, bps_tx.\n    ",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "resource": {
+            "default": 1,
+            "title": "Resource",
+            "type": "integer"
+          }
+        },
+        "title": "list_portsArguments"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "items": {
+              "$ref": "#/$defs/Port"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "$defs": {
+          "Port": {
+            "description": "A LANforge port: physical NIC, radio, or virtual station.\n\nField meanings track the public LANforge JSON cookbook. Source:\nhttps://www.candelatech.com/cookbook.php?vol=cli&book=JSON__Querying_the_LANforge_Client_for_JSON_Data",
+            "properties": {
+              "name": {
+                "description": "Port name, e.g. 'wiphy0' or 'sta0000'.",
+                "title": "Name",
+                "type": "string"
+              },
+              "mac": {
+                "description": "MAC address, e.g. '00:0e:8e:aa:bb:01'.",
+                "title": "Mac",
+                "type": "string"
+              },
+              "ip": {
+                "default": "0.0.0.0",
+                "description": "IPv4 address; '0.0.0.0' if unassigned.",
+                "title": "Ip",
+                "type": "string"
+              },
+              "alias": {
+                "default": "",
+                "description": "User-supplied alias, often empty.",
+                "title": "Alias",
+                "type": "string"
+              },
+              "radio": {
+                "default": "",
+                "description": "Parent radio (e.g. 'wiphy0') for stations.",
+                "title": "Radio",
+                "type": "string"
+              },
+              "channel": {
+                "default": 0,
+                "description": "Wi-Fi channel; 0 if not applicable.",
+                "title": "Channel",
+                "type": "integer"
+              },
+              "bps_rx": {
+                "default": 0,
+                "description": "Current RX bits/sec.",
+                "title": "Bps Rx",
+                "type": "integer"
+              },
+              "bps_tx": {
+                "default": 0,
+                "description": "Current TX bits/sec.",
+                "title": "Bps Tx",
+                "type": "integer"
+              },
+              "link_state": {
+                "default": "UNKNOWN",
+                "description": "UP, DOWN, or NO-LINK.",
+                "title": "Link State",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "mac"
+            ],
+            "title": "Port",
+            "type": "object"
+          }
+        },
+        "title": "list_portsOutput"
+      }
+    },
+    {
+      "name": "create_stations",
+      "description": "Create N virtual Wi-Fi stations on a radio (``add_sta`` per station).\n\n    Defaults to dry_run=True - LLM must explicitly set dry_run=False to execute.\n    On dry runs returns the exact CLI-JSON payloads plus a human-readable preview;\n    no HTTP traffic is generated.\n\n    Example: ``create_stations(spec={'radio': 'wiphy0', 'count': 4,\n    'ssid_prefix': 'Candela-Test', 'security': 'wpa2', 'key': 'secret'},\n    dry_run=True)`` returns four payloads naming sta0000..sta0003.\n\n    Args:\n        spec: Batch spec — radio, count (1-200), ssid_prefix, security\n            (open/wpa/wpa2/wpa3), key, optional resource and shelf.\n        dry_run: Default True. False executes against the box.\n\n    Returns:\n        Dict with keys ``dry_run``, ``payloads``, ``preview``, and (when\n        ``dry_run=False``) ``results`` containing one POST response per\n        station.\n    ",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "spec": {
+            "$ref": "#/$defs/CreateStationSpec"
+          },
+          "dry_run": {
+            "default": true,
+            "title": "Dry Run",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "spec"
+        ],
+        "$defs": {
+          "CreateStationSpec": {
+            "additionalProperties": false,
+            "description": "Spec for batch-creating virtual stations on a single radio.",
+            "properties": {
+              "radio": {
+                "description": "Parent radio, e.g. 'wiphy0'.",
+                "title": "Radio",
+                "type": "string"
+              },
+              "count": {
+                "description": "Number of stations to create (1-200).",
+                "maximum": 200,
+                "minimum": 1,
+                "title": "Count",
+                "type": "integer"
+              },
+              "ssid_prefix": {
+                "description": "SSID the stations will join.",
+                "title": "Ssid Prefix",
+                "type": "string"
+              },
+              "security": {
+                "default": "wpa2",
+                "description": "Security mode: open/wpa/wpa2/wpa3.",
+                "enum": [
+                  "open",
+                  "wpa",
+                  "wpa2",
+                  "wpa3"
+                ],
+                "title": "Security",
+                "type": "string"
+              },
+              "key": {
+                "default": "",
+                "description": "Pre-shared key. Empty if security is 'open'.",
+                "title": "Key",
+                "type": "string"
+              },
+              "resource": {
+                "default": 1,
+                "description": "Resource id; 1 on a single-box install.",
+                "title": "Resource",
+                "type": "integer"
+              },
+              "shelf": {
+                "default": 1,
+                "description": "Shelf id; almost always 1.",
+                "title": "Shelf",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "radio",
+              "count",
+              "ssid_prefix"
+            ],
+            "title": "CreateStationSpec",
+            "type": "object"
+          }
+        },
+        "title": "create_stationsArguments"
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true,
+        "title": "create_stationsDictOutput"
+      }
+    },
+    {
+      "name": "start_l3_traffic",
+      "description": "Start a Layer-3 cross-connect (traffic flow) between two endpoints.\n\n    Defaults to dry_run=True - LLM must explicitly set dry_run=False to execute.\n    On dry runs returns the exact CLI-JSON payloads (add_endp x2, add_cx,\n    set_cx_state RUNNING) plus a human-readable preview; no HTTP traffic.\n\n    Example: ``start_l3_traffic(spec={'endpoint_a': 'sta0000',\n    'endpoint_b': 'eth1', 'bps_min': 10000000, 'bps_max': 50000000,\n    'duration_sec': 60, 'protocol': 'lf_udp', 'cx_name': 'cx_uplink'},\n    dry_run=True)`` previews a 10-50 Mbps UDP CX named cx_uplink.\n\n    Args:\n        spec: Traffic spec — endpoint_a, endpoint_b, bps_min, bps_max,\n            duration_sec, protocol (udp/tcp/lf_udp/lf_tcp), cx_name.\n        dry_run: Default True. False executes against the box.\n\n    Returns:\n        Dict with keys ``dry_run``, ``payloads``, ``preview``, and (when\n        ``dry_run=False``) ``results`` containing one POST response per step.\n    ",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "spec": {
+            "$ref": "#/$defs/StartTrafficSpec"
+          },
+          "dry_run": {
+            "default": true,
+            "title": "Dry Run",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "spec"
+        ],
+        "$defs": {
+          "StartTrafficSpec": {
+            "additionalProperties": false,
+            "description": "Spec for starting a Layer-3 cross-connect between two endpoints.",
+            "properties": {
+              "endpoint_a": {
+                "description": "First endpoint port (e.g. 'sta0000').",
+                "title": "Endpoint A",
+                "type": "string"
+              },
+              "endpoint_b": {
+                "description": "Second endpoint port (e.g. 'eth1').",
+                "title": "Endpoint B",
+                "type": "string"
+              },
+              "bps_min": {
+                "description": "Min throughput per endpoint, bits/sec.",
+                "minimum": 0,
+                "title": "Bps Min",
+                "type": "integer"
+              },
+              "bps_max": {
+                "description": "Max throughput per endpoint, bits/sec.",
+                "minimum": 0,
+                "title": "Bps Max",
+                "type": "integer"
+              },
+              "duration_sec": {
+                "description": "How long to run, seconds.",
+                "minimum": 1,
+                "title": "Duration Sec",
+                "type": "integer"
+              },
+              "protocol": {
+                "default": "lf_udp",
+                "description": "LANforge endpoint protocol.",
+                "enum": [
+                  "udp",
+                  "tcp",
+                  "lf_udp",
+                  "lf_tcp"
+                ],
+                "title": "Protocol",
+                "type": "string"
+              },
+              "cx_name": {
+                "default": "cx_auto",
+                "description": "Name to assign the cross-connect.",
+                "title": "Cx Name",
+                "type": "string"
+              }
+            },
+            "required": [
+              "endpoint_a",
+              "endpoint_b",
+              "bps_min",
+              "bps_max",
+              "duration_sec"
+            ],
+            "title": "StartTrafficSpec",
+            "type": "object"
+          }
+        },
+        "title": "start_l3_trafficArguments"
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true,
+        "title": "start_l3_trafficDictOutput"
+      }
+    },
+    {
+      "name": "get_test_results",
+      "description": "Fetch current statistics for a Layer-3 cross-connect.\n\n    Read-only. Returns throughput, latency, and packet loss for the named CX.\n    Pair with ``diagnose_failure`` if the numbers look bad.\n\n    Example: ``get_test_results(cx_name='cx_001')`` returns the CXStats with\n    bps_rx/bps_tx, latency_ms, pkt_loss_pct, dropped, state.\n\n    Args:\n        cx_name: Cross-connect name.\n\n    Returns:\n        A CXStats snapshot.\n    ",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cx_name": {
+            "title": "Cx Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "cx_name"
+        ],
+        "title": "get_test_resultsArguments"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "Cross-connect name.",
+            "title": "Name",
+            "type": "string"
+          },
+          "state": {
+            "description": "Run state: 'Running', 'Stopped', 'Quiesce', etc.",
+            "title": "State",
+            "type": "string"
+          },
+          "bps_rx": {
+            "default": 0,
+            "description": "Current RX bits/sec across both endpoints.",
+            "title": "Bps Rx",
+            "type": "integer"
+          },
+          "bps_tx": {
+            "default": 0,
+            "description": "Current TX bits/sec across both endpoints.",
+            "title": "Bps Tx",
+            "type": "integer"
+          },
+          "latency_ms": {
+            "default": 0,
+            "description": "Latest reported one-way latency (ms).",
+            "title": "Latency Ms",
+            "type": "number"
+          },
+          "pkt_loss_pct": {
+            "default": 0,
+            "description": "Packet-loss percentage, 0-100.",
+            "title": "Pkt Loss Pct",
+            "type": "number"
+          },
+          "dropped": {
+            "default": 0,
+            "description": "Cumulative dropped-packet count.",
+            "title": "Dropped",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "state"
+        ],
+        "description": "Current statistics for a Layer-3 cross-connect (traffic flow).",
+        "title": "CXStats"
+      }
+    },
+    {
+      "name": "get_events",
+      "description": "Fetch the last N LANforge events, optionally filtered by severity.\n\n    Read-only. Severity is one of ``INFO``, ``WARN``, ``ERR``;\n    ``min_severity='WARN'`` drops INFO entries.\n\n    Example: ``get_events(limit=20, min_severity='WARN')`` returns the\n    most recent 20 WARN-or-worse events.\n\n    Args:\n        limit: Max events to return after filtering (1-500).\n        min_severity: Drop events below this severity (INFO/WARN/ERR).\n\n    Returns:\n        Filtered list of Event objects with timestamp, severity, message, port.\n    ",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "default": 50,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "min_severity": {
+            "default": "INFO",
+            "title": "Min Severity",
+            "type": "string"
+          }
+        },
+        "title": "get_eventsArguments"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "items": {
+              "$ref": "#/$defs/Event"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "$defs": {
+          "Event": {
+            "description": "A LANforge event log entry.",
+            "properties": {
+              "timestamp": {
+                "description": "ISO-8601 or LANforge native timestamp string.",
+                "title": "Timestamp",
+                "type": "string"
+              },
+              "severity": {
+                "description": "One of INFO, WARN, ERR.",
+                "enum": [
+                  "INFO",
+                  "WARN",
+                  "ERR"
+                ],
+                "title": "Severity",
+                "type": "string"
+              },
+              "message": {
+                "description": "Human-readable event message.",
+                "title": "Message",
+                "type": "string"
+              },
+              "resource": {
+                "default": 1,
+                "description": "Resource id; 1 on a single-box install.",
+                "title": "Resource",
+                "type": "integer"
+              },
+              "port": {
+                "default": "",
+                "description": "Port name if event is port-scoped, else empty.",
+                "title": "Port",
+                "type": "string"
+              }
+            },
+            "required": [
+              "timestamp",
+              "severity",
+              "message"
+            ],
+            "title": "Event",
+            "type": "object"
+          }
+        },
+        "title": "get_eventsOutput"
+      }
+    },
+    {
+      "name": "diagnose_failure",
+      "description": "Composite read-only diagnostic for a failing cross-connect.\n\n    Concurrently fetches CX stats, the last 100 events, and the full port\n    list for the resource, then assembles a DiagnosticReport with a\n    rule-based ``summary`` field that calls out high packet loss,\n    elevated WARN/ERR counts, beacon-loss/auth/disconnect patterns, and\n    stations with NO-LINK.\n\n    No LLM calls — the summary is pattern-matched. The LLM you're\n    talking to right now uses the structured fields (cx_stats,\n    recent_events, port_state) to build its own narrative; ``summary`` is\n    a fallback hint for clients without an LLM.\n\n    Example: ``diagnose_failure(cx_name='cx_001')`` for a CX with 12% loss\n    alongside three beacon-loss WARN events returns a summary like\n    \"cx_001: CX has high packet loss (12.0%); 3 WARN event(s); suspect RF\n    interference or weak signal.\"\n\n    Args:\n        cx_name: Cross-connect to diagnose.\n        resource: Resource id (default 1).\n\n    Returns:\n        A DiagnosticReport with cx_stats, recent_events, port_state,\n        radio_info, and summary.\n    ",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cx_name": {
+            "title": "Cx Name",
+            "type": "string"
+          },
+          "resource": {
+            "default": 1,
+            "title": "Resource",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "cx_name"
+        ],
+        "title": "diagnose_failureArguments"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "cx_stats": {
+            "$ref": "#/$defs/CXStats"
+          },
+          "recent_events": {
+            "items": {
+              "$ref": "#/$defs/Event"
+            },
+            "title": "Recent Events",
+            "type": "array"
+          },
+          "port_state": {
+            "items": {
+              "$ref": "#/$defs/Port"
+            },
+            "title": "Port State",
+            "type": "array"
+          },
+          "radio_info": {
+            "items": {
+              "$ref": "#/$defs/Port"
+            },
+            "title": "Radio Info",
+            "type": "array"
+          },
+          "summary": {
+            "description": "Rule-based human-readable summary. No LLM calls — pattern matched.",
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "cx_stats",
+          "recent_events",
+          "port_state",
+          "radio_info",
+          "summary"
+        ],
+        "$defs": {
+          "CXStats": {
+            "description": "Current statistics for a Layer-3 cross-connect (traffic flow).",
+            "properties": {
+              "name": {
+                "description": "Cross-connect name.",
+                "title": "Name",
+                "type": "string"
+              },
+              "state": {
+                "description": "Run state: 'Running', 'Stopped', 'Quiesce', etc.",
+                "title": "State",
+                "type": "string"
+              },
+              "bps_rx": {
+                "default": 0,
+                "description": "Current RX bits/sec across both endpoints.",
+                "title": "Bps Rx",
+                "type": "integer"
+              },
+              "bps_tx": {
+                "default": 0,
+                "description": "Current TX bits/sec across both endpoints.",
+                "title": "Bps Tx",
+                "type": "integer"
+              },
+              "latency_ms": {
+                "default": 0,
+                "description": "Latest reported one-way latency (ms).",
+                "title": "Latency Ms",
+                "type": "number"
+              },
+              "pkt_loss_pct": {
+                "default": 0,
+                "description": "Packet-loss percentage, 0-100.",
+                "title": "Pkt Loss Pct",
+                "type": "number"
+              },
+              "dropped": {
+                "default": 0,
+                "description": "Cumulative dropped-packet count.",
+                "title": "Dropped",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "name",
+              "state"
+            ],
+            "title": "CXStats",
+            "type": "object"
+          },
+          "Event": {
+            "description": "A LANforge event log entry.",
+            "properties": {
+              "timestamp": {
+                "description": "ISO-8601 or LANforge native timestamp string.",
+                "title": "Timestamp",
+                "type": "string"
+              },
+              "severity": {
+                "description": "One of INFO, WARN, ERR.",
+                "enum": [
+                  "INFO",
+                  "WARN",
+                  "ERR"
+                ],
+                "title": "Severity",
+                "type": "string"
+              },
+              "message": {
+                "description": "Human-readable event message.",
+                "title": "Message",
+                "type": "string"
+              },
+              "resource": {
+                "default": 1,
+                "description": "Resource id; 1 on a single-box install.",
+                "title": "Resource",
+                "type": "integer"
+              },
+              "port": {
+                "default": "",
+                "description": "Port name if event is port-scoped, else empty.",
+                "title": "Port",
+                "type": "string"
+              }
+            },
+            "required": [
+              "timestamp",
+              "severity",
+              "message"
+            ],
+            "title": "Event",
+            "type": "object"
+          },
+          "Port": {
+            "description": "A LANforge port: physical NIC, radio, or virtual station.\n\nField meanings track the public LANforge JSON cookbook. Source:\nhttps://www.candelatech.com/cookbook.php?vol=cli&book=JSON__Querying_the_LANforge_Client_for_JSON_Data",
+            "properties": {
+              "name": {
+                "description": "Port name, e.g. 'wiphy0' or 'sta0000'.",
+                "title": "Name",
+                "type": "string"
+              },
+              "mac": {
+                "description": "MAC address, e.g. '00:0e:8e:aa:bb:01'.",
+                "title": "Mac",
+                "type": "string"
+              },
+              "ip": {
+                "default": "0.0.0.0",
+                "description": "IPv4 address; '0.0.0.0' if unassigned.",
+                "title": "Ip",
+                "type": "string"
+              },
+              "alias": {
+                "default": "",
+                "description": "User-supplied alias, often empty.",
+                "title": "Alias",
+                "type": "string"
+              },
+              "radio": {
+                "default": "",
+                "description": "Parent radio (e.g. 'wiphy0') for stations.",
+                "title": "Radio",
+                "type": "string"
+              },
+              "channel": {
+                "default": 0,
+                "description": "Wi-Fi channel; 0 if not applicable.",
+                "title": "Channel",
+                "type": "integer"
+              },
+              "bps_rx": {
+                "default": 0,
+                "description": "Current RX bits/sec.",
+                "title": "Bps Rx",
+                "type": "integer"
+              },
+              "bps_tx": {
+                "default": 0,
+                "description": "Current TX bits/sec.",
+                "title": "Bps Tx",
+                "type": "integer"
+              },
+              "link_state": {
+                "default": "UNKNOWN",
+                "description": "UP, DOWN, or NO-LINK.",
+                "title": "Link State",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "mac"
+            ],
+            "title": "Port",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Composite diagnostic snapshot returned by ``diagnose_failure``.",
+        "title": "DiagnosticReport"
+      }
+    }
+  ]
+}
+=== tools/call list_ports resource=1 ===
+
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"name\": \"eth0\",\n  \"mac\": \"00:0e:8e:11:22:01\",\n  \"ip\": \"192.168.1.10\",\n  \"alias\": \"eth0\",\n  \"radio\": \"\",\n  \"channel\": 0,\n  \"bps_rx\": 84230,\n  \"bps_tx\": 12110,\n  \"link_state\": \"UP\"\n}"
+    },
+    {
+      "type": "text",
+      "text": "{\n  \"name\": \"wiphy0\",\n  \"mac\": \"00:0e:8e:aa:bb:00\",\n  \"ip\": \"0.0.0.0\",\n  \"alias\": \"wiphy0\",\n  \"radio\": \"\",\n  \"channel\": 36,\n  \"bps_rx\": 0,\n  \"bps_tx\": 0,\n  \"link_state\": \"UP\"\n}"
+    },
+    {
+      "type": "text",
+      "text": "{\n  \"name\": \"wiphy1\",\n  \"mac\": \"00:0e:8e:aa:bb:10\",\n  \"ip\": \"0.0.0.0\",\n  \"alias\": \"wiphy1\",\n  \"radio\": \"\",\n  \"channel\": 149,\n  \"bps_rx\": 0,\n  \"bps_tx\": 0,\n  \"link_state\": \"UP\"\n}"
+    },
+    {
+      "type": "text",
+      "text": "{\n  \"name\": \"sta0000\",\n  \"mac\": \"00:0e:8e:aa:bb:01\",\n  \"ip\": \"192.168.1.50\",\n  \"alias\": \"sta0000\",\n  \"radio\": \"wiphy0\",\n  \"channel\": 36,\n  \"bps_rx\": 312500000,\n  \"bps_tx\": 311000000,\n  \"link_state\": \"UP\"\n}"
+    },
+    {
+      "type": "text",
+      "text": "{\n  \"name\": \"sta0001\",\n  \"mac\": \"00:0e:8e:aa:bb:02\",\n  \"ip\": \"192.168.1.51\",\n  \"alias\": \"sta0001\",\n  \"radio\": \"wiphy0\",\n  \"channel\": 36,\n  \"bps_rx\": 298000000,\n  \"bps_tx\": 296000000,\n  \"link_state\": \"UP\"\n}"
+    },
+    {
+      "type": "text",
+      "text": "{\n  \"name\": \"sta0002\",\n  \"mac\": \"00:0e:8e:aa:bb:03\",\n  \"ip\": \"0.0.0.0\",\n  \"alias\": \"sta0002\",\n  \"radio\": \"wiphy0\",\n  \"channel\": 36,\n  \"bps_rx\": 0,\n  \"bps_tx\": 0,\n  \"link_state\": \"NO-LINK\"\n}"
+    }
+  ],
+  "structuredContent": {
+    "result": [
+      {
+        "name": "eth0",
+        "mac": "00:0e:8e:11:22:01",
+        "ip": "192.168.1.10",
+        "alias": "eth0",
+        "radio": "",
+        "channel": 0,
+        "bps_rx": 84230,
+        "bps_tx": 12110,
+        "link_state": "UP"
+      },
+      {
+        "name": "wiphy0",
+        "mac": "00:0e:8e:aa:bb:00",
+        "ip": "0.0.0.0",
+        "alias": "wiphy0",
+        "radio": "",
+        "channel": 36,
+        "bps_rx": 0,
+        "bps_tx": 0,
+        "link_state": "UP"
+      },
+      {
+        "name": "wiphy1",
+        "mac": "00:0e:8e:aa:bb:10",
+        "ip": "0.0.0.0",
+        "alias": "wiphy1",
+        "radio": "",
+        "channel": 149,
+        "bps_rx": 0,
+        "bps_tx": 0,
+        "link_state": "UP"
+      },
+      {
+        "name": "sta0000",
+        "mac": "00:0e:8e:aa:bb:01",
+        "ip": "192.168.1.50",
+        "alias": "sta0000",
+        "radio": "wiphy0",
+        "channel": 36,
+        "bps_rx": 312500000,
+        "bps_tx": 311000000,
+        "link_state": "UP"
+      },
+      {
+        "name": "sta0001",
+        "mac": "00:0e:8e:aa:bb:02",
+        "ip": "192.168.1.51",
+        "alias": "sta0001",
+        "radio": "wiphy0",
+        "channel": 36,
+        "bps_rx": 298000000,
+        "bps_tx": 296000000,
+        "link_state": "UP"
+      },
+      {
+        "name": "sta0002",
+        "mac": "00:0e:8e:aa:bb:03",
+        "ip": "0.0.0.0",
+        "alias": "sta0002",
+        "radio": "wiphy0",
+        "channel": 36,
+        "bps_rx": 0,
+        "bps_tx": 0,
+        "link_state": "NO-LINK"
+      }
+    ]
+  },
+  "isError": false
+}
+=== tools/call diagnose_failure cx_name=cx_001 ===
+
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"cx_stats\": {\n    \"name\": \"cx_001\",\n    \"state\": \"Running\",\n    \"bps_rx\": 95916000,\n    \"bps_tx\": 100000000,\n    \"latency_ms\": 18.4,\n    \"pkt_loss_pct\": 1.9500000000000002,\n    \"dropped\": 19495\n  },\n  \"recent_events\": [\n    {\n      \"timestamp\": \"2026-04-25 09:14:02.103\",\n      \"severity\": \"INFO\",\n      \"message\": \"lanforge_main heartbeat ok\",\n      \"resource\": 1,\n      \"port\": \"lanforge_main\"\n    },\n    {\n      \"timestamp\": \"2026-04-25 09:14:05.221\",\n      \"severity\": \"INFO\",\n      \"message\": \"sta0000 (phy #0): connected to 00:0e:8e:00:11:22\",\n      \"resource\": 1,\n      \"port\": \"sta0000\"\n    },\n    {\n      \"timestamp\": \"2026-04-25 09:14:05.844\",\n      \"severity\": \"INFO\",\n      \"message\": \"sta0001 (phy #0): connected to 00:0e:8e:00:11:22\",\n      \"resource\": 1,\n      \"port\": \"sta0001\"\n    },\n    {\n      \"timestamp\": \"2026-04-25 09:14:08.012\",\n      \"severity\": \"WARN\",\n      \"message\": \"sta0002: beacon loss event detected (>2s no beacon from AP)\",\n      \"resource\": 1,\n      \"port\": \"sta0002\"\n    },\n    {\n      \"timestamp\": \"2026-04-25 09:14:08.521\",\n      \"severity\": \"WARN\",\n      \"message\": \"sta0002: auth timeout, retrying (signal -82 dBm — likely RF issue)\",\n      \"resource\": 1,\n      \"port\": \"sta0002\"\n    },\n    {\n      \"timestamp\": \"2026-04-25 09:14:09.103\",\n      \"severity\": \"WARN\",\n      \"message\": \"sta0002: disconnected from BSS (reason 4: disassoc due to inactivity)\",\n      \"resource\": 1,\n      \"port\": \"sta0002\"\n    },\n    {\n      \"timestamp\": \"2026-04-25 09:14:10.000\",\n      \"severity\": \"INFO\",\n      \"message\": \"cx_001: cross-connect started, ramping to 50 Mbps bidirectional\",\n      \"resource\": 1,\n      \"port\": \"cx_001\"\n    },\n    {\n      \"timestamp\": \"2026-04-25 09:14:14.412\",\n      \"severity\": \"ERR\",\n      \"message\": \"cx_001: 47 packets dropped on endpoint A (RF interference suspected)\",\n      \"resource\": 1,\n      \"port\": \"cx_001\"\n    }\n  ],\n  \"port_state\": [\n    {\n      \"name\": \"eth0\",\n      \"mac\": \"00:0e:8e:11:22:01\",\n      \"ip\": \"192.168.1.10\",\n      \"alias\": \"eth0\",\n      \"radio\": \"\",\n      \"channel\": 0,\n      \"bps_rx\": 84230,\n      \"bps_tx\": 12110,\n      \"link_state\": \"UP\"\n    },\n    {\n      \"name\": \"wiphy0\",\n      \"mac\": \"00:0e:8e:aa:bb:00\",\n      \"ip\": \"0.0.0.0\",\n      \"alias\": \"wiphy0\",\n      \"radio\": \"\",\n      \"channel\": 36,\n      \"bps_rx\": 0,\n      \"bps_tx\": 0,\n      \"link_state\": \"UP\"\n    },\n    {\n      \"name\": \"wiphy1\",\n      \"mac\": \"00:0e:8e:aa:bb:10\",\n      \"ip\": \"0.0.0.0\",\n      \"alias\": \"wiphy1\",\n      \"radio\": \"\",\n      \"channel\": 149,\n      \"bps_rx\": 0,\n      \"bps_tx\": 0,\n      \"link_state\": \"UP\"\n    },\n    {\n      \"name\": \"sta0000\",\n      \"mac\": \"00:0e:8e:aa:bb:01\",\n      \"ip\": \"192.168.1.50\",\n      \"alias\": \"sta0000\",\n      \"radio\": \"wiphy0\",\n      \"channel\": 36,\n      \"bps_rx\": 312500000,\n      \"bps_tx\": 311000000,\n      \"link_state\": \"UP\"\n    },\n    {\n      \"name\": \"sta0001\",\n      \"mac\": \"00:0e:8e:aa:bb:02\",\n      \"ip\": \"192.168.1.51\",\n      \"alias\": \"sta0001\",\n      \"radio\": \"wiphy0\",\n      \"channel\": 36,\n      \"bps_rx\": 298000000,\n      \"bps_tx\": 296000000,\n      \"link_state\": \"UP\"\n    },\n    {\n      \"name\": \"sta0002\",\n      \"mac\": \"00:0e:8e:aa:bb:03\",\n      \"ip\": \"0.0.0.0\",\n      \"alias\": \"sta0002\",\n      \"radio\": \"wiphy0\",\n      \"channel\": 36,\n      \"bps_rx\": 0,\n      \"bps_tx\": 0,\n      \"link_state\": \"NO-LINK\"\n    }\n  ],\n  \"radio_info\": [\n    {\n      \"name\": \"wiphy0\",\n      \"mac\": \"00:0e:8e:aa:bb:00\",\n      \"ip\": \"0.0.0.0\",\n      \"alias\": \"wiphy0\",\n      \"radio\": \"\",\n      \"channel\": 36,\n      \"bps_rx\": 0,\n      \"bps_tx\": 0,\n      \"link_state\": \"UP\"\n    },\n    {\n      \"name\": \"wiphy1\",\n      \"mac\": \"00:0e:8e:aa:bb:10\",\n      \"ip\": \"0.0.0.0\",\n      \"alias\": \"wiphy1\",\n      \"radio\": \"\",\n      \"channel\": 149,\n      \"bps_rx\": 0,\n      \"bps_tx\": 0,\n      \"link_state\": \"UP\"\n    }\n  ],\n  \"summary\": \"cx_001: CX has moderate packet loss (2.0%); 3 WARN and 1 ERR event(s); 1 station(s) with NO-LINK; suspect RF interference or weak signal.\"\n}"
+    }
+  ],
+  "structuredContent": {
+    "cx_stats": {
+      "name": "cx_001",
+      "state": "Running",
+      "bps_rx": 95916000,
+      "bps_tx": 100000000,
+      "latency_ms": 18.4,
+      "pkt_loss_pct": 1.9500000000000002,
+      "dropped": 19495
+    },
+    "recent_events": [
+      {
+        "timestamp": "2026-04-25 09:14:02.103",
+        "severity": "INFO",
+        "message": "lanforge_main heartbeat ok",
+        "resource": 1,
+        "port": "lanforge_main"
+      },
+      {
+        "timestamp": "2026-04-25 09:14:05.221",
+        "severity": "INFO",
+        "message": "sta0000 (phy #0): connected to 00:0e:8e:00:11:22",
+        "resource": 1,
+        "port": "sta0000"
+      },
+      {
+        "timestamp": "2026-04-25 09:14:05.844",
+        "severity": "INFO",
+        "message": "sta0001 (phy #0): connected to 00:0e:8e:00:11:22",
+        "resource": 1,
+        "port": "sta0001"
+      },
+      {
+        "timestamp": "2026-04-25 09:14:08.012",
+        "severity": "WARN",
+        "message": "sta0002: beacon loss event detected (>2s no beacon from AP)",
+        "resource": 1,
+        "port": "sta0002"
+      },
+      {
+        "timestamp": "2026-04-25 09:14:08.521",
+        "severity": "WARN",
+        "message": "sta0002: auth timeout, retrying (signal -82 dBm — likely RF issue)",
+        "resource": 1,
+        "port": "sta0002"
+      },
+      {
+        "timestamp": "2026-04-25 09:14:09.103",
+        "severity": "WARN",
+        "message": "sta0002: disconnected from BSS (reason 4: disassoc due to inactivity)",
+        "resource": 1,
+        "port": "sta0002"
+      },
+      {
+        "timestamp": "2026-04-25 09:14:10.000",
+        "severity": "INFO",
+        "message": "cx_001: cross-connect started, ramping to 50 Mbps bidirectional",
+        "resource": 1,
+        "port": "cx_001"
+      },
+      {
+        "timestamp": "2026-04-25 09:14:14.412",
+        "severity": "ERR",
+        "message": "cx_001: 47 packets dropped on endpoint A (RF interference suspected)",
+        "resource": 1,
+        "port": "cx_001"
+      }
+    ],
+    "port_state": [
+      {
+        "name": "eth0",
+        "mac": "00:0e:8e:11:22:01",
+        "ip": "192.168.1.10",
+        "alias": "eth0",
+        "radio": "",
+        "channel": 0,
+        "bps_rx": 84230,
+        "bps_tx": 12110,
+        "link_state": "UP"
+      },
+      {
+        "name": "wiphy0",
+        "mac": "00:0e:8e:aa:bb:00",
+        "ip": "0.0.0.0",
+        "alias": "wiphy0",
+        "radio": "",
+        "channel": 36,
+        "bps_rx": 0,
+        "bps_tx": 0,
+        "link_state": "UP"
+      },
+      {
+        "name": "wiphy1",
+        "mac": "00:0e:8e:aa:bb:10",
+        "ip": "0.0.0.0",
+        "alias": "wiphy1",
+        "radio": "",
+        "channel": 149,
+        "bps_rx": 0,
+        "bps_tx": 0,
+        "link_state": "UP"
+      },
+      {
+        "name": "sta0000",
+        "mac": "00:0e:8e:aa:bb:01",
+        "ip": "192.168.1.50",
+        "alias": "sta0000",
+        "radio": "wiphy0",
+        "channel": 36,
+        "bps_rx": 312500000,
+        "bps_tx": 311000000,
+        "link_state": "UP"
+      },
+      {
+        "name": "sta0001",
+        "mac": "00:0e:8e:aa:bb:02",
+        "ip": "192.168.1.51",
+        "alias": "sta0001",
+        "radio": "wiphy0",
+        "channel": 36,
+        "bps_rx": 298000000,
+        "bps_tx": 296000000,
+        "link_state": "UP"
+      },
+      {
+        "name": "sta0002",
+        "mac": "00:0e:8e:aa:bb:03",
+        "ip": "0.0.0.0",
+        "alias": "sta0002",
+        "radio": "wiphy0",
+        "channel": 36,
+        "bps_rx": 0,
+        "bps_tx": 0,
+        "link_state": "NO-LINK"
+      }
+    ],
+    "radio_info": [
+      {
+        "name": "wiphy0",
+        "mac": "00:0e:8e:aa:bb:00",
+        "ip": "0.0.0.0",
+        "alias": "wiphy0",
+        "radio": "",
+        "channel": 36,
+        "bps_rx": 0,
+        "bps_tx": 0,
+        "link_state": "UP"
+      },
+      {
+        "name": "wiphy1",
+        "mac": "00:0e:8e:aa:bb:10",
+        "ip": "0.0.0.0",
+        "alias": "wiphy1",
+        "radio": "",
+        "channel": 149,
+        "bps_rx": 0,
+        "bps_tx": 0,
+        "link_state": "UP"
+      }
+    ],
+    "summary": "cx_001: CX has moderate packet loss (2.0%); 3 WARN and 1 ERR event(s); 1 station(s) with NO-LINK; suspect RF interference or weak signal."
+  },
+  "isError": false
+}
