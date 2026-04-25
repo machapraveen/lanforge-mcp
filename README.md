@@ -6,6 +6,8 @@ Drive Candela Technologies' LANforge Wi-Fi test platform with Claude — or any 
 
 > 90-second walkthrough video: _link forthcoming. See `demo/demo_script.md` for the recording script._
 
+> **v0.1.0** — six tools, mock-mode default, MIT licensed. 63 tests, 88% coverage, `mypy --strict` clean. Python 3.10+, `mcp` SDK 1.2+.
+
 ## Why
 
 LANforge already speaks JSON over HTTP on port 8080 (`/cli-json/:cmd`, `/port/:resource/:port`,
