@@ -1,0 +1,100 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "lanforge-mcp"
+version = "0.1.0"
+description = "Model Context Protocol server that lets an LLM drive Candela Technologies' LANforge Wi-Fi test platform via its JSON-over-HTTP API."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+authors = [{ name = "Macha Praveen" }]
+keywords = ["mcp", "lanforge", "candela", "wifi", "testing", "claude"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: System :: Networking",
+    "Topic :: Software Development :: Testing",
+]
+dependencies = [
+    "mcp>=1.2,<2.0",
+    "httpx>=0.27",
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "pytest-cov>=5.0",
+    "ruff>=0.6",
+    "mypy>=1.10",
+]
+
+[project.scripts]
+lanforge-mcp = "lanforge_mcp.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/machapraveen/lanforge-mcp"
+Repository = "https://github.com/machapraveen/lanforge-mcp"
+Issues = "https://github.com/machapraveen/lanforge-mcp/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lanforge_mcp"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/lanforge_mcp/data" = "lanforge_mcp/data"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "A", "C4", "SIM", "PTH", "RUF"]
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["A", "N"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+files = ["src"]
+warn_unused_ignores = true
+warn_return_any = true
+disallow_any_generics = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+no_implicit_optional = true
+
+[[tool.mypy.overrides]]
+module = "mcp.*"
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning:websockets.*",
+]
+
+[tool.coverage.run]
+source = ["src/lanforge_mcp"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]
+show_missing = true

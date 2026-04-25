@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "lanforge": {
+      "command": "python",
+      "args": ["-m", "lanforge_mcp"],
+      "env": {
+        "LANFORGE_HOST": "localhost",
+        "LANFORGE_PORT": "8080",
+        "LANFORGE_MOCK": "1",
+        "LANFORGE_TIMEOUT_SEC": "10"
+      }
+    }
+  }
+}
