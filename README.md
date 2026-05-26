@@ -127,7 +127,7 @@ curl -s http://YOUR_LANFORGE:8080/events/last/100 > tests/fixtures/events.json
 - Rule-based diagnostic summaries — no LLM calls.
 - `mypy --strict`, `ruff` clean, `pytest` ≥ 80% coverage.
 
-## Credits
+## Credit's
 
 Built with Claude Code in 48 hours. Not affiliated with Candela Technologies.
 
